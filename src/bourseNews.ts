@@ -1,16 +1,24 @@
 import { axios } from "./axiosCli";
 import * as Cheerio from "cheerio";
-import { writeFileSync } from "fs";
+import { appendFileSync, writeFileSync } from "fs";
+import { sleep } from "./utils";
 
 const URL = "https://www.boursenews.ir/fa";
 const INIT_ID = 10775;
-const LAST_ID = 278645;
+// const INIT_ID = 278545;
+const LAST_ID = 10875;
+// const LAST_ID = 278645;
 export async function scrapeBourseNews() {
   // await scrapePageLists();
-
+  const allData = [];
   for (let i = INIT_ID; i < LAST_ID; i++) {
     try {
-      // await scrapeSinglePage(i);
+      const pageDataObj = await scrapeSinglePage(i);
+      allData.push(pageDataObj);
+      // const string = JSON.stringify(data);
+      // await appendFileSync("./export/BourseNews_sample.json", string);
+      console.log("+ " + i + "saved.");
+      await sleep(200);
     } catch (error) {
       if (error instanceof Error) {
         console.log("Error: ", error.name, "->", error.message);
@@ -18,6 +26,12 @@ export async function scrapeBourseNews() {
       }
     }
   }
+  const string = JSON.stringify(allData);
+  writeFileSync(
+    `./export/BourseNews_sample(${INIT_ID}-${LAST_ID}).json`,
+    string
+  );
+  console.log("Finished!");
 }
 
 async function scrapeSinglePage(newsId: number) {
@@ -29,6 +43,7 @@ async function scrapeSinglePage(newsId: number) {
     const newsPageData$ = $(".newsColR");
     const newsContent$ = newsPageData$.find(".newsContent");
     const newsContent = {
+      newsId: newsContent$.find(".newsId").text().split(":")[1].trim() || null,
       newsTitle: newsContent$.find(".newsTitle").text().trim() || null,
       newsPreTitle: newsContent$.find(".newsPreTitle").text().trim() || null,
       newsPosterUrl: newsContent$.find(".lead_image").attr("src") || null,
@@ -42,7 +57,6 @@ async function scrapeSinglePage(newsId: number) {
           .find("meta[property='article:modified_time']")
           .attr("content")
           ?.trim() || null,
-      newsId: newsContent$.find(".newsId").text() || null,
       newsLikeCount: newsContent$.find(".like_number").text().trim() || null,
       newsContent:
         newsContent$.find(".row").find("div.body > p").text().trim() || null,
