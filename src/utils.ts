@@ -1,5 +1,7 @@
 import { appendFileSync, writeFileSync } from "fs";
+import { type Collection } from "mongodb";
 
+/*
 function strDateExtractor(str: string) {
   console.log(str);
 }
@@ -19,9 +21,14 @@ String.toEnNum = (str: string) => {
   }
   return str;
 };
+*/
 
 function sleep(ms: number) {
   return new Promise(async (resolve, reject) => setTimeout(resolve, ms));
+}
+async function getLastItemIdFromDb(db: Collection) {
+  const result = await db.findOne({}, { sort: { _id: -1 } });
+  return result?.id;
 }
 async function fsSaveJson(
   data: object | [],
@@ -34,4 +41,4 @@ async function fsSaveJson(
   console.log("Finished!");
 }
 
-export { sleep, fsSaveJson };
+export { sleep, fsSaveJson, getLastItemIdFromDb };
