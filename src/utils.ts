@@ -1,5 +1,12 @@
+import { appendFileSync, writeFileSync } from "fs";
+
 function strDateExtractor(str: string) {
   console.log(str);
+}
+declare global {
+  interface StringConstructor {
+    toEnNum(str: string): string;
+  }
 }
 
 String.toEnNum = (str: string) => {
@@ -16,4 +23,15 @@ String.toEnNum = (str: string) => {
 function sleep(ms: number) {
   return new Promise(async (resolve, reject) => setTimeout(resolve, ms));
 }
-export { sleep };
+async function fsSaveJson(
+  data: object | [],
+  title: string,
+  initId: number | string,
+  lastId: number | string
+) {
+  const string = JSON.stringify(data);
+  writeFileSync(`./export/${title}(${initId}-${lastId}).json`, string);
+  console.log("Finished!");
+}
+
+export { sleep, fsSaveJson };

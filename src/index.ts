@@ -1,16 +1,12 @@
 import { scrapeBourseNews } from "./bourseNews";
+import { scrapeSahamyab } from "./sahamyab";
 // import { strDateExtractor } from "./utils";
 
-declare global {
-  interface StringConstructor {
-    toEnNum(str: string): string;
-  }
-}
-
 try {
-  scrapeBourseNews();
+  scrapeSahamyab();
+  // scrapeBourseNews();
   // strDateExtractor("شنبه ۱۸ شهريور ۱۴۰۲ - ۱۱:۱۱");
 } catch (error) {
   if (error instanceof Error)
-    console.log("Error: ", error.name, "->", error.message);
+    console.log("Error in index: ", error.name, "->", error.message);
 }

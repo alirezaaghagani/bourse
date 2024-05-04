@@ -1,13 +1,10 @@
 import { axios } from "./axiosCli";
 import * as Cheerio from "cheerio";
-import { appendFileSync, writeFileSync } from "fs";
-import { sleep } from "./utils";
+import { sleep, fsSaveJson } from "./utils";
 
 const URL = "https://www.boursenews.ir/fa";
 const INIT_ID = 10775;
-// const INIT_ID = 278545;
-const LAST_ID = 10875;
-// const LAST_ID = 278645;
+const LAST_ID = 278645;
 export async function scrapeBourseNews() {
   // await scrapePageLists();
   const allData = [];
@@ -26,12 +23,7 @@ export async function scrapeBourseNews() {
       }
     }
   }
-  const string = JSON.stringify(allData);
-  writeFileSync(
-    `./export/BourseNews_sample(${INIT_ID}-${LAST_ID}).json`,
-    string
-  );
-  console.log("Finished!");
+  await fsSaveJson(allData, "BourseNews_sample", INIT_ID, LAST_ID);
 }
 
 async function scrapeSinglePage(newsId: number) {
