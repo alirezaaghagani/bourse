@@ -1,21 +1,29 @@
 import { axios } from "./axiosCli";
 import * as Cheerio from "cheerio";
-import { sleep, fsSaveJson } from "./utils";
+import { sleep, fsSaveJson, getLastItemIdFromDb, toEnNum } from "./utils";
+import { connectToDbCollection } from "./db";
 
 const URL = "https://www.boursenews.ir/fa";
-const INIT_ID = 10775;
-const LAST_ID = 278645;
+
 export async function scrapeBourseNews() {
-  // await scrapePageLists();
-  const allData = [];
+  const db = await connectToDbCollection("bourseNews");
+  const lastItemId = await getLastItemIdFromDb(db);
+  const INIT_ID = toEnNum(lastItemId) + 1 || 10775;
+  const LAST_ID = 278645;
+  console.log(INIT_ID, LAST_ID);
+
   for (let i = INIT_ID; i < LAST_ID; i++) {
     try {
       const pageDataObj = await scrapeSinglePage(i);
-      allData.push(pageDataObj);
-      // const string = JSON.stringify(data);
-      // await appendFileSync("./export/BourseNews_sample.json", string);
-      console.log("+ " + i + "saved.");
-      await sleep(200);
+      if (pageDataObj?.newsTitle) {
+        await db.insertOne(pageDataObj);
+        const itemsLeft = LAST_ID - i;
+        const timeLeft = Math.floor(itemsLeft / 3600);
+        console.log(
+          `+  ${pageDataObj?.id} saved. ${timeLeft} hours left!  (${itemsLeft} items)`
+        );
+      }
+      // await sleep(200);
     } catch (error) {
       if (error instanceof Error) {
         console.log("Error: ", error.name, "->", error.message);
@@ -23,7 +31,7 @@ export async function scrapeBourseNews() {
       }
     }
   }
-  await fsSaveJson(allData, "BourseNews_sample", INIT_ID, LAST_ID);
+  // await fsSaveJson(allData, "BourseNews_sample", INIT_ID, LAST_ID);
 }
 
 async function scrapeSinglePage(newsId: number) {
@@ -35,7 +43,7 @@ async function scrapeSinglePage(newsId: number) {
     const newsPageData$ = $(".newsColR");
     const newsContent$ = newsPageData$.find(".newsContent");
     const newsContent = {
-      newsId: newsContent$.find(".newsId").text().split(":")[1].trim() || null,
+      id: newsContent$.find(".newsId").text().split(":")[1].trim() || null,
       newsTitle: newsContent$.find(".newsTitle").text().trim() || null,
       newsPreTitle: newsContent$.find(".newsPreTitle").text().trim() || null,
       newsPosterUrl: newsContent$.find(".lead_image").attr("src") || null,
@@ -51,7 +59,13 @@ async function scrapeSinglePage(newsId: number) {
           ?.trim() || null,
       newsLikeCount: newsContent$.find(".like_number").text().trim() || null,
       newsContent:
-        newsContent$.find(".row").find("div.body > p").text().trim() || null,
+        newsContent$
+          .find(".row")
+          .find("div.body")
+          .children()
+          .not(".newsBottomBar,.advBox")
+          .text()
+          .trim() || null,
       newsTags: newsContent$
         .find(".newsTags")
         .children("a")
@@ -98,7 +112,7 @@ async function scrapeSinglePage(newsId: number) {
   } catch (error) {
     if (error instanceof Error) {
       console.log("Error: ", error.name, "->", error.message);
-      throw new Error("!- Failed to fetch" + 278645 + "data!");
+      throw new Error("!- Failed to fetch" + newsId + "data!");
     }
   }
 }

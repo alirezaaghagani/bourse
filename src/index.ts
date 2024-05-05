@@ -3,8 +3,8 @@ import { scrapeSahamyab } from "./sahamyab";
 // import { strDateExtractor } from "./utils";
 
 try {
-  scrapeSahamyab();
-  // scrapeBourseNews();
+  // scrapeSahamyab();
+  scrapeBourseNews();
   // strDateExtractor("شنبه ۱۸ شهريور ۱۴۰۲ - ۱۱:۱۱");
 } catch (error) {
   if (error instanceof Error)
