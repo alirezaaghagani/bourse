@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./dist",
-    "dev": "nodemon --ignore ./export ./src/index.ts"
+    "start": "cross-env ENV='server' node ./dist",
+    "dev": "cross-env ENV='local' nodemon --ignore ./export ./src/index.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -13,11 +14,12 @@
   "dependencies": {
     "axios": "^1.6.8",
     "cheerio": "^1.0.0-rc.12",
+    "cross-env": "^7.0.3",
     "mongodb": "^6.6.0"
   },
   "devDependencies": {
-    "@types/node": "^20.12.8",
     "@types/cheerio": "^0.22.35",
+    "@types/node": "^20.12.8",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"

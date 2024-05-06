@@ -7,8 +7,8 @@ const URL = "https://www.boursenews.ir/fa";
 
 export async function scrapeBourseNews() {
   const db = await connectToDbCollection("bourseNews");
-  const lastItemId = await getLastItemIdFromDb(db);
-  const INIT_ID = toEnNum(lastItemId) + 1 || 10775;
+  const lastItemId = await getLastItemIdFromDb<string>(db);
+  const INIT_ID = toEnNum(lastItemId!) + 1 || 10775;
   const LAST_ID = 278645;
   console.log(INIT_ID, LAST_ID);
 

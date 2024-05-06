@@ -15,7 +15,7 @@ function toEnNum(str: string) {
 function sleep(ms: number) {
   return new Promise(async (resolve, reject) => setTimeout(resolve, ms));
 }
-async function getLastItemIdFromDb(db: Collection) {
+async function getLastItemIdFromDb<T>(db: Collection): Promise<T | null> {
   const result = await db.findOne({}, { sort: { _id: -1 } });
   return result?.id;
 }
