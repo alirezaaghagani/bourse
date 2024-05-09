@@ -1,9 +1,11 @@
 import { scrapeBourseNews } from "./bourseNews";
 import { scrapeSahamyab } from "./sahamyab";
+import { scrapeBourse24 } from "./bourse24";
 // import { strDateExtractor } from "./utils";
 
 try {
-  scrapeSahamyab();
+  scrapeBourse24();
+  // scrapeSahamyab();
   // scrapeBourseNews();
   // strDateExtractor("شنبه ۱۸ شهريور ۱۴۰۲ - ۱۱:۱۱");
 } catch (error) {
