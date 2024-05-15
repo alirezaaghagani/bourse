@@ -23,10 +23,13 @@ async function fsSaveJson(
   data: object | [],
   title: string,
   initId: number | string,
-  lastId: number | string
+  lastId?: number | string
 ) {
   const string = JSON.stringify(data);
-  writeFileSync(`./export/${title}(${initId}-${lastId}).json`, string);
+  writeFileSync(
+    `./export/${title}(${initId}${lastId ? "-" + lastId : ""}).json`,
+    string
+  );
   console.log("Finished!");
 }
 
