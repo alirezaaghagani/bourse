@@ -2,7 +2,7 @@ import * as Cheerio from "cheerio";
 import { axios } from "./axiosCli";
 import { fsSaveJson, sleep } from "./utils";
 import { connectToDbCollection } from "./db";
-import { list } from "./24List";
+import { list } from "./LinkLists/24List";
 
 const URL = "https://www.bourse24.ir";
 
