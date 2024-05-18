@@ -3,10 +3,12 @@ import { scrapeSahamyab } from "./sahamyab";
 import { scrapeBourse24 } from "./bourse24";
 import { scrapeEghtesadNews } from "./eghtesadNews";
 import scrapeBoursePress from "./boursePress";
+import { scrapeSahamyabV2 } from "./sahamyabV2";
 
 // ** uncomment the a single function to run that code
 try {
-  scrapeBoursePress();
+  scrapeSahamyabV2();
+  // scrapeBoursePress();
   // scrapeEghtesadNews();
   // scrapeBourse24();
   // scrapeSahamyab();

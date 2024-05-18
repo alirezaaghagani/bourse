@@ -10,6 +10,6 @@ const axiosCli = axios.create({
   headers,
   withCredentials: true,
   maxRedirects: 2,
-  timeout: 15000,
+  timeout: 8000,
 });
 export { axiosCli as axios };
